@@ -19,19 +19,7 @@ void ASoulstealerPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	//Get mouse position in world
-	FVector targetLocation;
-	
-	GetMouseInWorld(targetLocation);
 
-	targetLocation.Z = GetCharacter()->GetActorLocation().Z;
-
-	//Set player rotation to look at position
-	FRotator lookAtRot = UKismetMathLibrary::FindLookAtRotation(GetCharacter()->GetActorLocation(), targetLocation);
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Mouse World Location: " + targetLocation.ToString()));
-
-	GetCharacter()->SetActorRotation(lookAtRot);
 }
 
 void ASoulstealerPlayerController::SetupInputComponent()
@@ -39,7 +27,9 @@ void ASoulstealerPlayerController::SetupInputComponent()
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	//Setup input
+	//Setup input callbacks
+	InputComponent->BindAxis("MouseX", this, &ASoulstealerPlayerController::LookAtMouse);
+	InputComponent->BindAxis("MouseY", this, &ASoulstealerPlayerController::LookAtMouse);
 }
 
 void ASoulstealerPlayerController::GetMouseInWorld(FVector &WorldLocation)
@@ -52,5 +42,20 @@ void ASoulstealerPlayerController::GetMouseInWorld(FVector &WorldLocation)
 	{
 		WorldLocation = mouseHit.ImpactPoint;
 	}
+}
+
+void ASoulstealerPlayerController::LookAtMouse(float axisValue)
+{
+	//Get mouse position in world
+	FVector targetLocation;
+	GetMouseInWorld(targetLocation);
+
+	//Normalise Z Coordinate
+	targetLocation.Z = GetCharacter()->GetActorLocation().Z;
+
+	//Set player rotation to look at position
+	FRotator lookAtRot = UKismetMathLibrary::FindLookAtRotation(GetCharacter()->GetActorLocation(), targetLocation);
+
+	GetCharacter()->SetActorRotation(lookAtRot);
 }
 

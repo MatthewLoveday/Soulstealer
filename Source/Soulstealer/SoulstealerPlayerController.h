@@ -25,6 +25,8 @@ protected:
 
 	void GetMouseInWorld(FVector &WorldLocation);
 
+	void LookAtMouse(float axisValue);
+
 };
 
 
