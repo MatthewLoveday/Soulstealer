@@ -18,7 +18,7 @@ ASoulstealerPlayerController::ASoulstealerPlayerController()
 void ASoulstealerPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
+	LookAtMouse(0.0f);
 
 }
 
@@ -26,10 +26,6 @@ void ASoulstealerPlayerController::SetupInputComponent()
 {
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
-
-	//Setup input callbacks
-	InputComponent->BindAxis("MouseX", this, &ASoulstealerPlayerController::LookAtMouse);
-	InputComponent->BindAxis("MouseY", this, &ASoulstealerPlayerController::LookAtMouse);
 }
 
 void ASoulstealerPlayerController::GetMouseInWorld(FVector &WorldLocation)

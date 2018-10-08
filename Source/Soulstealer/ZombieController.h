@@ -23,7 +23,8 @@ private:
 	AActor* target;
 
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaSeconds) override;
 
-	
+	void FaceActor(FVector Location);
+	void FaceActor(const AActor * Actor);
 };

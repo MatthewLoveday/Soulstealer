@@ -2,28 +2,46 @@
 
 #include "ZombieController.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void AZombieController::BeginPlay()
 {
+	Super::BeginPlay();
+
 	//Set the target
 	target = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
-	if (target != nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Aqquired Target " + target->GetName() + " at position " + target->GetActorLocation().ToString()));
-	}
-
-	MoveToLocation(target->GetActorLocation(), -1, true, true);
+	//Set actor tick
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
-void AZombieController::Tick(float DeltaTime)
+void AZombieController::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaTime);
+	Super::Tick(DeltaSeconds);
 
+	//Use navmesh to navigate to actor
+	MoveToActor(target, -1.f);
+	FaceActor(target->GetActorLocation());
+}
 
-	MoveToLocation(target->GetActorLocation(), -1, true, true);
+void AZombieController::FaceActor(FVector Location)
+{
+	//Normalise Z Coordinate
+	Location.Z = GetCharacter()->GetActorLocation().Z;
+
+	//Set player rotation to look at position
+	FRotator lookAtRot = UKismetMathLibrary::FindLookAtRotation(GetCharacter()->GetActorLocation(), Location);
+
+	GetCharacter()->SetActorRotation(lookAtRot);
+}
+
+void AZombieController::FaceActor(const AActor * Actor)
+{
+	FaceActor(Actor->GetActorLocation());
 }
 
 
