@@ -27,6 +27,9 @@ protected:
 
 	void LookAtMouse(float axisValue);
 
+	void MoveVertical(float axisValue);
+	void MoveHorizontal(float axisValue);
+
 };
 
 

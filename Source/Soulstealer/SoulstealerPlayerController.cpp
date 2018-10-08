@@ -55,3 +55,13 @@ void ASoulstealerPlayerController::LookAtMouse(float axisValue)
 	GetCharacter()->SetActorRotation(lookAtRot);
 }
 
+void ASoulstealerPlayerController::MoveVertical(float axisValue)
+{
+	FVector camForward = PlayerCameraManager->GetCameraRotation.GetActorForwardVector();
+
+}
+
+void ASoulstealerPlayerController::MoveHorizontal(float axisValue)
+{
+}
+
