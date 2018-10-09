@@ -13,19 +13,25 @@ ASoulstealerPlayerController::ASoulstealerPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
+
+	MovementVector = FVector::ZeroVector;
 }
 
 void ASoulstealerPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 	LookAtMouse(0.0f);
-
+	MoveCharacter();
 }
 
 void ASoulstealerPlayerController::SetupInputComponent()
 {
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
+	InputComponent->BindAxis("MoveForward", this, &ASoulstealerPlayerController::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &ASoulstealerPlayerController::MoveRight);
+	InputComponent->BindAction("Aim", IE_Pressed, this, &ASoulstealerPlayerController::Aim);
+	InputComponent->BindAction("Aim", IE_Released, this, &ASoulstealerPlayerController::StopAim);
 }
 
 void ASoulstealerPlayerController::GetMouseInWorld(FVector &WorldLocation)
@@ -55,13 +61,34 @@ void ASoulstealerPlayerController::LookAtMouse(float axisValue)
 	GetCharacter()->SetActorRotation(lookAtRot);
 }
 
-void ASoulstealerPlayerController::MoveVertical(float axisValue)
+FVector ASoulstealerPlayerController::GetCameraForward()
 {
-	FVector camForward = PlayerCameraManager->GetCameraRotation.GetActorForwardVector();
-
+	FRotator camForward = PlayerCameraManager->GetCameraRotation();
+	camForward.Pitch = 0;
+	return UKismetMathLibrary::GetForwardVector(camForward);
 }
 
-void ASoulstealerPlayerController::MoveHorizontal(float axisValue)
+FVector ASoulstealerPlayerController::GetCameraRight()
 {
+	FRotator camRight = PlayerCameraManager->GetCameraRotation();
+	camRight.Pitch = 0;
+	return UKismetMathLibrary::GetRightVector(camRight);
 }
+
+void ASoulstealerPlayerController::MoveRight(float axisValue)
+{
+	MovementVector += GetCameraRight() * axisValue;
+}
+
+void ASoulstealerPlayerController::MoveForward(float axisValue)
+{
+	MovementVector += GetCameraForward() * axisValue;
+}
+
+void ASoulstealerPlayerController::MoveCharacter()
+{
+	GetCharacter()->AddMovementInput(MovementVector, MoveSpeed, false);
+	MovementVector = FVector::ZeroVector;
+}
+
 

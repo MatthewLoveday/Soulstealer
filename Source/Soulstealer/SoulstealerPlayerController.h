@@ -14,6 +14,13 @@ class ASoulstealerPlayerController : public APlayerController
 public:
 	ASoulstealerPlayerController();
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MoveSpeed = 20.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Aiming = false;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -27,9 +34,19 @@ protected:
 
 	void LookAtMouse(float axisValue);
 
-	void MoveVertical(float axisValue);
-	void MoveHorizontal(float axisValue);
+	//Movement
+	FVector MovementVector;
 
+	FVector GetCameraForward();
+	FVector GetCameraRight();
+
+	void MoveForward(float axisValue);
+	void MoveRight(float axisValue);
+
+	void MoveCharacter();
+
+	void Aim() { Aiming = true; }
+	void StopAim() { Aiming = false; }
 };
 
 
