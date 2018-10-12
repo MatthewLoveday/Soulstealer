@@ -21,6 +21,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool Aiming = false;
 
+	UFUNCTION(BlueprintCallable)
+		void Aim() { Aiming = true; }
+
+	UFUNCTION(BlueprintCallable)
+		void StopAim() { Aiming = false; }
+
+	UFUNCTION(BlueprintCallable)
+		void Shoot();
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -45,8 +54,7 @@ protected:
 
 	void MoveCharacter();
 
-	void Aim() { Aiming = true; }
-	void StopAim() { Aiming = false; }
+
 };
 
 

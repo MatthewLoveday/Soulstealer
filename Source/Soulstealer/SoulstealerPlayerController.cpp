@@ -91,4 +91,22 @@ void ASoulstealerPlayerController::MoveCharacter()
 	MovementVector = FVector::ZeroVector;
 }
 
+void ASoulstealerPlayerController::Shoot()
+{
+	//Perform Linetrace from player using the forward vector
+
+	FHitResult hitResult;
+
+
+	GetWorld()->LineTraceSingleByChannel(hitResult, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() + 10.0f), ECC_GameTraceChannel1);
+
+
+	//Hit Something
+	if (hitResult.bBlockingHit)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT(""+hitResult.Actor.Get()->GetName()));
+	}
+
+}
+
 
