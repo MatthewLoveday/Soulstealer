@@ -17,6 +17,14 @@ class SOULSTEALER_API AZombieController : public AAIController
 public:
 	void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxHealth = 100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Health = 100;
+
+	UFUNCTION()
+	void TakenDamage();
 
 private:
 	UPROPERTY(VisibleAnywhere)

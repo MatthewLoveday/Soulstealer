@@ -8,6 +8,8 @@
 #include "Engine/World.h"
 #include "Engine/Engine.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "DrawDebugHelpers.h"
+#include "ZombieController.h"
 
 ASoulstealerPlayerController::ASoulstealerPlayerController()
 {
@@ -98,13 +100,20 @@ void ASoulstealerPlayerController::Shoot()
 	FHitResult hitResult;
 
 
-	GetWorld()->LineTraceSingleByChannel(hitResult, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() + 10.0f), ECC_GameTraceChannel1);
-
+	GetWorld()->LineTraceSingleByChannel(hitResult, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() * 400.0f), ECC_GameTraceChannel1);
+	//DrawDebugLine(GetWorld(), GetCharacter()->GetActorLocation(), GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() * 400.0f), FColor::Red, true, 10.0f, (uint8)'\000', 5.0f);
 
 	//Hit Something
 	if (hitResult.bBlockingHit)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT(""+hitResult.Actor.Get()->GetName()));
+		//hitResult.GetActor()->Destroy();
+
+		if (dynamic_cast<AZombieController*>(static_cast<APawn*>(hitResult.GetActor())->GetController()) != nullptr)
+		{
+			dynamic_cast<AZombieController*>(static_cast<APawn*>(hitResult.GetActor())->GetController())->Health -= 10;
+			dynamic_cast<AZombieController*>(static_cast<APawn*>(hitResult.GetActor())->GetController())->TakenDamage();
+		}
 	}
 
 }

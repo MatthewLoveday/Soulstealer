@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "Engine/Engine.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "OutputDeviceNull.h"
 
 void AZombieController::BeginPlay()
 {
@@ -17,6 +18,13 @@ void AZombieController::BeginPlay()
 	//Set actor tick
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+}
+
+void AZombieController::TakenDamage()
+{
+	FEditorScriptExecutionGuard ScriptGuard;
+	FOutputDeviceNull ar;
+	this->CallFunctionByNameWithArguments(TEXT("RecievedDamage"), ar, NULL, true);
 }
 
 void AZombieController::Tick(float DeltaSeconds)
