@@ -10,6 +10,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "ZombieController.h"
+#include <string>
 
 ASoulstealerPlayerController::ASoulstealerPlayerController()
 {
@@ -39,7 +40,7 @@ void ASoulstealerPlayerController::SetupInputComponent()
 void ASoulstealerPlayerController::GetMouseInWorld(FVector &WorldLocation)
 {
 	FHitResult mouseHit;
-	GetHitResultUnderCursor(ECC_GameTraceChannel1, false, mouseHit);
+	GetHitResultUnderCursor(ECC_GameTraceChannel2, false, mouseHit);
 	
 	//If linetrace has hit a target
 	if (mouseHit.bBlockingHit)
@@ -96,26 +97,46 @@ void ASoulstealerPlayerController::MoveCharacter()
 void ASoulstealerPlayerController::Shoot()
 {
 	//Perform Linetrace from player using the forward vector
+	Ammo -= 1;
 
 	FHitResult hitResult;
-
-
-	GetWorld()->LineTraceSingleByChannel(hitResult, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() * 400.0f), ECC_GameTraceChannel1);
-	//DrawDebugLine(GetWorld(), GetCharacter()->GetActorLocation(), GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() * 400.0f), FColor::Red, true, 10.0f, (uint8)'\000', 5.0f);
+	GetWorld()->LineTraceSingleByChannel(hitResult, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() * 10000.0f), ECC_GameTraceChannel1);
 
 	//Hit Something
 	if (hitResult.bBlockingHit)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT(""+hitResult.Actor.Get()->GetName()));
-		//hitResult.GetActor()->Destroy();
-
-		if (dynamic_cast<AZombieController*>(static_cast<APawn*>(hitResult.GetActor())->GetController()) != nullptr)
+		try
 		{
-			dynamic_cast<AZombieController*>(static_cast<APawn*>(hitResult.GetActor())->GetController())->Health -= 10;
-			dynamic_cast<AZombieController*>(static_cast<APawn*>(hitResult.GetActor())->GetController())->TakenDamage();
+			AZombieController* zombie = dynamic_cast<AZombieController*>(static_cast<APawn*>(hitResult.GetActor())->GetController());
+
+			if (zombie != nullptr)
+			{
+				zombie->Health -= 10;
+				zombie->TakenDamage();
+			}
+		}
+		catch(std::string e)
+		{
 		}
 	}
 
+}
+
+void ASoulstealerPlayerController::RestoreAmmo()
+{
+	//calculate amount of ammo to reload
+	int amountToReload = MaxAmmo - Ammo;
+
+	if(amountToReload >= MaxAmmo)
+	{
+		StoredAmmo -= amountToReload;
+		Ammo += amountToReload;
+	}
+	else
+	{
+		Ammo += amountToReload;
+		StoredAmmo -= amountToReload;
+	}
 }
 
 

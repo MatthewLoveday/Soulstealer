@@ -8,6 +8,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "OutputDeviceNull.h"
 
+#include <string>
+
 void AZombieController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -22,9 +24,16 @@ void AZombieController::BeginPlay()
 
 void AZombieController::TakenDamage()
 {
-	FEditorScriptExecutionGuard ScriptGuard;
-	FOutputDeviceNull ar;
-	this->CallFunctionByNameWithArguments(TEXT("RecievedDamage"), ar, NULL, true);
+	try
+	{
+		FEditorScriptExecutionGuard ScriptGuard;
+		FOutputDeviceNull ar;
+		this->CallFunctionByNameWithArguments(TEXT("RecievedDamage"), ar, NULL, true);
+	}
+	catch(std::string e)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to call recieved damage on blueprint: "));
+	}
 }
 
 void AZombieController::Tick(float DeltaSeconds)

@@ -21,6 +21,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool Aiming = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxHealth = 100;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Health = 100;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Ammo = 12;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxAmmo = 12; //Clip Size
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int StoredAmmo = 999;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int CollectedSouls = 0;
+
 	UFUNCTION(BlueprintCallable)
 		void Aim() { Aiming = true; }
 
@@ -29,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void Shoot();
+
+	UFUNCTION(BlueprintCallable)
+		void RestoreAmmo();
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
