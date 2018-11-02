@@ -113,6 +113,11 @@ void ASoulstealerPlayerController::Shoot()
 			{
 				zombie->Health -= 10;
 				zombie->TakenDamage();
+
+				if (zombie->Health < 1)
+				{
+					CollectedSouls++;
+				}
 			}
 		}
 		catch(std::string e)
